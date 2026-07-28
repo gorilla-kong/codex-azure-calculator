@@ -39,6 +39,20 @@ docker run --rm -p 3000:3000 azure-calculator
 
 Open `http://localhost:3000`.
 
+## Automatic Azure deployment
+
+Every push to `main` runs the API tests, builds the production container, pushes
+it to Azure Container Registry, and deploys it to the `codex-calculator` Azure
+Container App. You can also start the workflow manually from the **Actions** tab.
+
+The repository must define these GitHub Actions secrets:
+
+- `CODEXCALCULATOR_AZURE_CREDENTIALS`
+- `CODEXCALCULATOR_REGISTRY_USERNAME`
+- `CODEXCALCULATOR_REGISTRY_PASSWORD`
+
+The deployment workflow is in `.github/workflows/auto-deploy.yml`.
+
 ## Test the API directly
 
 ```bash
