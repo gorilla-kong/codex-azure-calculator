@@ -39,13 +39,37 @@ input {
   box-shadow: 0 24px 70px rgba(24, 34, 48, 0.12);
 }
 
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
 .eyebrow {
-  margin: 0 0 8px;
+  margin: 0;
   color: #475467;
   font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.language-toggle {
+  width: auto;
+  margin: 0;
+  padding: 8px 12px;
+  color: #3448c5;
+  background: #ffffff;
+  border: 1px solid #3448c5;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.language-toggle:focus-visible {
+  outline: 3px solid rgba(52, 72, 197, 0.25);
+  outline-offset: 2px;
 }
 
 h1 {
@@ -91,7 +115,7 @@ input:focus {
   box-shadow: 0 0 0 4px rgba(52, 72, 197, 0.14);
 }
 
-button {
+.submit-button {
   width: 100%;
   margin-top: 22px;
   padding: 14px 18px;
@@ -103,11 +127,12 @@ button {
   font-weight: 800;
 }
 
-button:hover:not(:disabled) {
+.submit-button:hover:not(:disabled),
+.language-toggle:hover {
   filter: brightness(0.94);
 }
 
-button:disabled {
+.submit-button:disabled {
   cursor: wait;
   opacity: 0.68;
 }

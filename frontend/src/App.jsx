@@ -1,15 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const translations = {
+  en: {
+    switchLanguage: "Skakel oor na Afrikaans",
+    toggleLabel: "Afrikaans",
+    documentTitle: "Azure Calculator",
+    title: "Tiny cloud calculator",
+    intro: "Enter two numbers. A small API microservice will add them.",
+    firstNumber: "First number",
+    secondNumber: "Second number",
+    calculating: "Calculating…",
+    addNumbers: "Add numbers",
+    result: "Result",
+    calculationFailed: "The calculation failed."
+  },
+  af: {
+    switchLanguage: "Switch to English",
+    toggleLabel: "English",
+    documentTitle: "Azure-rekenaar",
+    title: "Klein wolkrekenaar",
+    intro: "Voer twee getalle in. ’n Klein API-mikrodiens sal hulle optel.",
+    firstNumber: "Eerste getal",
+    secondNumber: "Tweede getal",
+    calculating: "Bereken tans…",
+    addNumbers: "Tel getalle op",
+    result: "Antwoord",
+    calculationFailed: "Die berekening het misluk."
+  }
+};
 
 export default function App() {
   const [x, setX] = useState("");
   const [y, setY] = useState("");
   const [result, setResult] = useState(null);
-  const [error, setError] = useState("");
+  const [hasError, setHasError] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [language, setLanguage] = useState("en");
+  const copy = translations[language];
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.title = copy.documentTitle;
+  }, [copy.documentTitle, language]);
 
   async function calculate(event) {
     event.preventDefault();
-    setError("");
+    setHasError(false);
     setResult(null);
     setIsCalculating(true);
 
@@ -25,12 +61,12 @@ export default function App() {
       const body = await response.json();
 
       if (!response.ok) {
-        throw new Error(body.error || "The calculation failed.");
+        throw new Error(body.error);
       }
 
       setResult(body.result);
-    } catch (requestError) {
-      setError(requestError.message || "The calculation failed.");
+    } catch {
+      setHasError(true);
     } finally {
       setIsCalculating(false);
     }
@@ -39,16 +75,29 @@ export default function App() {
   return (
     <main className="page-shell">
       <section className="calculator-card" aria-labelledby="page-title">
-        <p className="eyebrow">Codex → GitHub → Azure</p>
-        <h1 id="page-title">Tiny cloud calculator</h1>
-        <p className="intro">
-          Enter two numbers. A small API microservice will add them.
-        </p>
+        <div className="card-header">
+          <p className="eyebrow">Codex → GitHub → Azure</p>
+          <button
+            className="language-toggle"
+            type="button"
+            aria-label={copy.switchLanguage}
+            onClick={() => {
+              setLanguage((currentLanguage) =>
+                currentLanguage === "en" ? "af" : "en"
+              );
+              setHasError(false);
+            }}
+          >
+            {copy.toggleLabel}
+          </button>
+        </div>
+        <h1 id="page-title">{copy.title}</h1>
+        <p className="intro">{copy.intro}</p>
 
         <form onSubmit={calculate}>
           <div className="input-grid">
             <label>
-              First number
+              {copy.firstNumber}
               <input
                 type="number"
                 step="any"
@@ -59,7 +108,7 @@ export default function App() {
             </label>
 
             <label>
-              Second number
+              {copy.secondNumber}
               <input
                 type="number"
                 step="any"
@@ -70,18 +119,22 @@ export default function App() {
             </label>
           </div>
 
-          <button type="submit" disabled={isCalculating}>
-            {isCalculating ? "Calculating…" : "Add numbers"}
+          <button
+            className="submit-button"
+            type="submit"
+            disabled={isCalculating}
+          >
+            {isCalculating ? copy.calculating : copy.addNumbers}
           </button>
         </form>
 
         <div className="output" aria-live="polite">
           {result !== null && (
             <p className="result">
-              Result: <strong>{result}</strong>
+              {copy.result}: <strong>{result}</strong>
             </p>
           )}
-          {error && <p className="error">{error}</p>}
+          {hasError && <p className="error">{copy.calculationFailed}</p>}
         </div>
       </section>
     </main>
